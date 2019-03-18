@@ -1,22 +1,23 @@
 import axios from 'axios';
-
+import store from '../storeCreator';
 export default class BaseApi {
-    constructor({config = {}, store}) {
+    constructor({config = {}}) {
         this.store = store;
         this.request = this.request(config);
         this.getMethod = this.getMethod.bind(this);
         this.postMethod = this.postMethod.bind(this);
+        this.params = config.apiParams;
     }
 
     request = config => {
         return axios.create({
-            // baseURL: 'localhost'
+            baseURL: config.baseUrl
         })
     }
 
     getMethod = (url, params) => {
         return this.request
-          .get(url, params)
+          .get(url, {params: {...params, ...this.params}})
           .then(response => {
             return response.data;
           })

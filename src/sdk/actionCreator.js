@@ -1,3 +1,3 @@
-export default (action, payload) => {
+export default (action, payload = {}) => {
     return ({type: action, payload})
 };

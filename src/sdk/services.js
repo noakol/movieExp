@@ -1,7 +1,7 @@
 export const ombdUrl = 'www.omdbapi.com';
 
-export const getOMBD = (query) => {
-    return {ombdUrl, query};
+export const getOMBD = () => {
+    return ombdUrl;
 }
 
 export default {

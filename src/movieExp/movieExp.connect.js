@@ -1,24 +1,26 @@
 import {connect} from 'react-redux';
 import MovieExpComp from './movieExp.component';
 import MovieExpApi from '../sdk/movieExp.api';
-import {store} from '../App';
+import appConfig from '../App.config';
 
-const movieExpApi = new MovieExpApi({store});
+const config = appConfig.configApi;
+const movieExpApi = new MovieExpApi({
+    config
+});
 
 const mapStateToProps = () => {
     return {
-        movieList: movieExpApi.getMoviesList()
+        movieList: movieExpApi.getMoviesList(),
+        noDataFoundIndicator: movieExpApi.getNoDataFoundIndicator()
     };
 };
 
-const mapDispatchTpProps = () => {
+const mapDispatchTpProps = (dispatch) => {
     return {
-        loadMovies: (params) => {
+        loadMovies: async (params) => {
             movieExpApi.setLoaderUp()
             try {
-                movieExpApi.loadMovies(params)
-            } catch {
-                movieExpApi.setLoaderDown();
+                await dispatch(movieExpApi.loadMovies(params));
             } finally {
                 movieExpApi.setLoaderDown();
             }

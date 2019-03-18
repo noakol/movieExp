@@ -8,7 +8,9 @@ const rootReducer = combineReducers({
     movies: movieReducer
 });
   
-export default store = createStore(
+const store = createStore(
     rootReducer, 
     applyMiddleware(thunk)
 );
+
+export default store;

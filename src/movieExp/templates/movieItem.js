@@ -1,10 +1,10 @@
 import React from 'react';
 
-export default MovieBox = ({poster, title}) => {
+export default function MovieBox({poster, title}) {
     return (
-        <div className="movieItem">
+        <li className="movie-item">
             <img src={poster} />
             <h1>{title}</h1>
-        </div>
+        </li>
     );
 }

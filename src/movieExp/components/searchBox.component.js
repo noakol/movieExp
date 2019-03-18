@@ -6,36 +6,38 @@ export default class SearchBox extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            searcVal = ''
+            searcVal: ''
         };
         this.timeout = null;
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
-    handleInputChange = (e) => {
+    handleInputChange(e) {
         const updatedValue = e.target.value;
-
+        
         clearTimeout(this.timeout);
 
         this.setState({
             searcVal: updatedValue
         });
 
-        if (updatedValue && updatedValue.length > 2) {
-            const { updateSearchResults } = this.props;
+        if (updatedValue && updatedValue.length >= config.minSearchkeys) {
             this.timeout = setTimeout(
-                () => updateSearchResults(updatedValue), config.searchDelayTime)
+                () => this.props.updateSearchResults(updatedValue), config.searchDelayTime)
         }
-
     }
 
 
     render() {
         return (
-            <div class="search-box-container">
-                <input 
-                    type="text"
-                    value={this.state.value}
-                    onChange={this.handleInputChange} />
+            <div className="search-box-container">
+                <label>
+                    Enter Text Here
+                    <input 
+                        type="text"
+                        value={this.state.value}
+                        onChange={this.handleInputChange} />
+                </label>
             </div>
         )
     }

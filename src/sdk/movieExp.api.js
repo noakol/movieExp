@@ -5,23 +5,39 @@ import services from './services';
 
 export default class movieExpApi extends baseApi {
     getMoviesList = () => {
-        return this.store.movies.movieList;
+        return this.store.getState().movies.movieList;
     }
 
     setLoaderUp = () => {
-        this.store.dispacth(actionCreator(actionTypes.LOADER_UP));
+        this.store.dispatch(actionCreator(actionTypes.LOADER_UP));
     }
 
     setLoaderDown = () => {
-        this.store.dispacth(actionCreator(actionTypes.LOADER_DOWN));
+        this.store.dispatch(actionCreator(actionTypes.LOADER_DOWN));
+    }
+
+    getLoader = () => {
+        return this.store.getState().loader.count;
+    }
+
+    getNoDataFoundIndicator = () => {
+        return this.store.getState().movies.noDataFound;
     }
 
     loadMovies = (params) => {
         return (dispatch) => {
-            this.getMethod(services.ombdUrl, params).then((res) => {
-                const moviesList = this.mapMoviesDataResponse(res);
-                const action = actionCreator(actionTypes.GET_MOVIES_LIST_SUCCES, moviesList);
-                dispatch(action);
+            return this.getMethod('/', params).then((res) => {
+                if (res.Error) {
+                    const actionType = params.page === 1 ? actionTypes.SET_NO_DATA : 
+                        actionTypes.SET_NO_MORE_DATA
+                    dispatch(actionCreator(actionType));
+                } else {
+                    const moviesList = this.mapMoviesDataResponse(res);
+                    const actionType = params.page === 1 ? actionTypes.GET_MOVIES_LIST_SUCCES : 
+                        actionTypes.GET_MORE_MOVIES_SUCCES
+                    actionCreator(actionType, moviesList);
+                    dispatch(actionCreator(actionType, moviesList));
+                }
             })
             .catch(err => {
                 throw err;
@@ -30,6 +46,11 @@ export default class movieExpApi extends baseApi {
     }
 
     mapMoviesDataResponse(res) {
-        return res;
+        return res && res.Search && res.Search.length && res.Search.map((movieItem) => {
+            return {
+                title: movieItem.Title,
+                poster: movieItem.Poster
+            }
+        });
     }
 }

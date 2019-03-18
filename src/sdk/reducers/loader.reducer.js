@@ -1,20 +1,22 @@
 import actionTypes from '../actionTypes';
 
-export default function loader(state = {}, action) {
-  const {type, payload} = action;
-
+export default function loader(state = {count: 0}, action) {
+  const {type} = action;
+    let newState;
     switch (type) {
       case actionTypes.LOADER_UP:
-        const newState = {
-          count: state.count++ 
+        newState = {
+          count: state.count+= 1 
         }; 
-        return newState;
+        break;
       case actionTypes.LOADER_DOWN:
-        const newState = {
-          count: state.count-- 
+        newState = {
+          count: state.count-= 1
         }; 
-        return newState;
+        break;
       default:
-        return state
+        newState = state;
+        break;
     }
+    return newState;
 };
